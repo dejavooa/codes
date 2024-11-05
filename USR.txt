@@ -1,0 +1,134 @@
+-------------------------------------------------------------------------------------------------
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.ALL;
+
+-- Universal Shift Register Entity
+ENTITY unishiftreg IS
+    PORT(
+         si : IN  std_logic; -- Serial input
+         clk : IN  std_logic; -- Clock input
+         so : OUT std_logic; -- Serial output
+         pin : IN  std_logic_vector(3 downto 0); -- Parallel input
+         po : OUT std_logic_vector(3 downto 0); -- Parallel output
+         sel : IN  std_logic_vector(1 downto 0) -- Mode selection
+    );
+END unishiftreg;
+
+ARCHITECTURE behavior OF unishiftreg IS
+    SIGNAL reg : std_logic_vector(3 downto 0) := (others => '0'); -- Internal register
+BEGIN
+    PROCESS(clk)
+    BEGIN
+        IF rising_edge(clk) THEN
+            CASE sel IS
+                WHEN "00" =>  -- No change
+                    reg <= reg;
+                WHEN "01" =>  -- Shift right
+                    reg <= si & reg(3 downto 1);
+                WHEN "10" =>  -- Shift left
+                    reg <= reg(2 downto 0) & si;
+                WHEN "11" =>  -- Parallel load
+                    reg <= pin;
+                WHEN OTHERS =>
+                    reg <= (others => '0');  -- Default case (optional)
+            END CASE;
+        END IF;
+    END PROCESS;
+    
+    -- Assign outputs
+    so <= reg(0); -- Serial output from the least significant bit
+    po <= reg;    -- Parallel output from the register
+
+END behavior;
+
+-------------------------------------------------------------------------------------------------
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.ALL;
+
+-- Test Bench for Universal Shift Register
+ENTITY shiftreg_tb IS
+END shiftreg_tb;
+
+ARCHITECTURE behavior OF shiftreg_tb IS 
+    COMPONENT unishiftreg
+    PORT(
+         si : IN  std_logic; -- Serial input
+         clk : IN  std_logic; -- Clock input
+         so : OUT  std_logic; -- Serial output
+         pin : IN  std_logic_vector(3 downto 0); -- Parallel input
+         po : OUT  std_logic_vector(3 downto 0); -- Parallel output
+         sel : IN  std_logic_vector(1 downto 0) -- Mode selection
+        );
+    END COMPONENT;
+   
+    -- Signals for inputs and outputs
+    SIGNAL si : std_logic := '0'; -- Serial input signal
+    SIGNAL clk : std_logic := '0'; -- Clock signal
+    SIGNAL pin : std_logic_vector(3 downto 0) := (others => '0'); -- Parallel input signal
+    SIGNAL sel : std_logic_vector(1 downto 0) := (others => '0'); -- Mode selection signal
+    SIGNAL so : std_logic; -- Serial output signal
+    SIGNAL po : std_logic_vector(3 downto 0); -- Parallel output signal
+
+    -- Clock period definition
+    CONSTANT clk_period : time := 10 ns;
+    
+BEGIN
+    -- Instantiate the Unit Under Test (UUT)
+    uut: unishiftreg PORT MAP (
+        si => si,
+        clk => clk,
+        so => so,
+        pin => pin,
+        po => po,
+        sel => sel
+    );
+
+    -- Clock process
+    clk_process : PROCESS
+    BEGIN
+        clk <= '0';
+        WAIT FOR clk_period / 2;
+        clk <= '1';
+        WAIT FOR clk_period / 2;
+    END PROCESS;
+
+    -- Stimulus process to test different modes
+    stim_proc: PROCESS
+    BEGIN		
+        -- Initialize input values
+        pin <= "1010";  -- Parallel load data
+        
+        -- Test case for no change
+        sel <= "00";
+        WAIT FOR clk_period * 2;
+
+        -- Test case for shift right
+        sel <= "01";
+        si <= '1'; -- Set serial input to '1'
+        WAIT FOR clk_period * 2;
+
+        -- Test case for shift left
+        sel <= "10";
+        si <= '0'; -- Set serial input to '0'
+        WAIT FOR clk_period * 2;
+
+        -- Test case for parallel load
+        sel <= "11";
+        WAIT FOR clk_period * 2;
+        
+        -- Hold for observation
+        WAIT;
+    END PROCESS;
+
+END behavior;
+
+-------------------------------------------------------------------------------------------------
+
+NET "clk" LOC = P132; NET "reset" LOC = P204; NET "sl_in" LOC = P179; NET "sr_in" LOC = P180; NET "sel<0>" LOC = P165; NET "sel<1>" LOC = P167;
+NET "datain<0>" LOC = P192; NET "datain<1>" LOC = P193; NET "datain<2>" LOC = P189; NET "datain<3>" LOC = P190; NET "dataout<0>" LOC = P205; NET "dataout<1>" LOC = P206; NET "dataout<2>" LOC = P203; NET "dataout<3>" LOC = P200;
+
+-------------------------------------------------------------------------------------------------

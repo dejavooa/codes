@@ -1,0 +1,142 @@
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_unsigned.ALL;
+use IEEE.STD_LOGIC_arith.ALL;
+
+entity 4BITALU is
+    Port ( 
+        a : in  STD_LOGIC_VECTOR (3 downto 0);
+        b : in  STD_LOGIC_VECTOR (3 downto 0);
+        s : in  STD_LOGIC_VECTOR (2 downto 0);
+        c : out STD_LOGIC_VECTOR (3 downto 0)
+    );
+end 4BITALU;
+
+architecture Behavioral of 4BITALU is
+begin
+    process (a, b, s)
+    begin
+        case s is
+            when "000" => c <= a + b;
+            when "001" => c <= a - b;
+            when "010" => c <= a and b;
+            when "011" => c <= a or b;
+            when "100" => c <= a nand b;
+            when "101" => c <= a nor b;
+            when "110" => c <= not a;
+            when "111" => c <= a;
+            when others => c <= (others => '0');
+        end case;
+    end process;
+end Behavioral;
+
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_unsigned.ALL;
+
+entity tb_4BITALU is
+end tb_4BITALU;
+
+architecture Behavioral of tb_4BITALU is
+    -- Component declaration for the Unit Under Test (UUT)
+    component 4BITALU
+        Port (
+            a : in STD_LOGIC_VECTOR (3 downto 0);
+            b : in STD_LOGIC_VECTOR (3 downto 0);
+            s : in STD_LOGIC_VECTOR (2 downto 0);
+            c : out STD_LOGIC_VECTOR (3 downto 0)
+        );
+    end component;
+
+    -- Signals for connecting to the UUT
+    signal a : STD_LOGIC_VECTOR (3 downto 0) := "0000";
+    signal b : STD_LOGIC_VECTOR (3 downto 0) := "0000";
+    signal s : STD_LOGIC_VECTOR (2 downto 0) := "000";
+    signal c : STD_LOGIC_VECTOR (3 downto 0);
+
+begin
+    -- Instantiate the Unit Under Test (UUT)
+    uut: 4BITALU Port map (
+        a => a,
+        b => b,
+        s => s,
+        c => c
+    );
+
+    -- Test process
+    process
+    begin
+        -- Test Case 1: s = "000" (Addition)
+        a <= "0011"; -- 3
+        b <= "0101"; -- 5
+        s <= "000";
+        wait for 10 ns;
+        
+        -- Test Case 2: s = "001" (Subtraction)
+        a <= "1001"; -- 9
+        b <= "0011"; -- 3
+        s <= "001";
+        wait for 10 ns;
+
+        -- Test Case 3: s = "010" (AND operation)
+        a <= "1100";
+        b <= "1010";
+        s <= "010";
+        wait for 10 ns;
+
+        -- Test Case 4: s = "011" (OR operation)
+        a <= "1100";
+        b <= "1010";
+        s <= "011";
+        wait for 10 ns;
+
+        -- Test Case 5: s = "100" (NAND operation)
+        a <= "1100";
+        b <= "1010";
+        s <= "100";
+        wait for 10 ns;
+
+        -- Test Case 6: s = "101" (NOR operation)
+        a <= "1100";
+        b <= "1010";
+        s <= "101";
+        wait for 10 ns;
+
+        -- Test Case 7: s = "110" (NOT operation on 'a')
+        a <= "1100";
+        s <= "110";
+        wait for 10 ns;
+
+        -- Test Case 8: s = "111" (Pass-through 'a')
+        a <= "1100";
+        s <= "111";
+        wait for 10 ns;
+
+        -- End simulation
+        wait;
+   
+-------------------------------------------------------------------------------------------------
+
+net a(3) loc=p96;
+net a(2) loc=p97;
+net a(1) loc=p100;
+net a(0) loc=p101;
+net b(3) loc=p90;
+net b(2) loc=p93;
+net b(1) loc=p94;
+net b(0) loc=p95;
+net s(2) loc=p85;
+net s(1) loc=p86;
+net s(0) loc=p87;
+net c(3) loc=p167;
+net c(2) loc=p166;
+net c(1) loc=p165
+net c(0) loc=p162;
+
+-------------------------------------------------------------------------------------------------
+
+

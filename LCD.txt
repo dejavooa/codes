@@ -1,0 +1,183 @@
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity lcd is
+    Port (
+        clk, reset : in std_logic;
+        RS, EN, RW : out std_logic;
+        data : out std_logic_vector(7 downto 0)
+    );
+end lcd;
+
+architecture Behavioral of lcd is
+    type state_type is (s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11,
+                        s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23);
+    signal state : state_type := s0;
+    signal count : std_logic_vector(22 downto 0) := (others => '0');
+    signal clk1 : std_logic;
+begin
+    -- Clock divider process
+    process(clk, reset)
+    begin
+        if (reset = '1') then
+            count <= (others => '0');
+        elsif (clk'event and clk = '1') then
+            count <= count + "0001";
+        end if;
+        clk1 <= count(20);
+    end process;
+
+    -- RW signal permanently set to write mode
+    RW <= '0';
+
+    -- LCD control process
+    process(clk1, reset)
+    begin
+        if reset = '1' then
+            state <= s0;
+        elsif rising_edge(clk1) then
+            case state is
+                when s0 =>
+                    RS <= '0'; EN <= '1'; data <= "00110000"; state <= s1;
+                when s1 =>
+                    EN <= '0'; state <= s2;
+                when s2 =>
+                    EN <= '1'; data <= "00001111"; state <= s3;
+                when s3 =>
+                    EN <= '0'; state <= s4;
+                when s4 =>
+                    EN <= '1'; data <= "00000001"; state <= s5;
+                when s5 =>
+                    EN <= '0'; state <= s6;
+                when s6 =>
+                    EN <= '1'; data <= "10000100"; state <= s7;
+                when s7 =>
+                    EN <= '0'; state <= s8;
+                when s8 =>
+                    RS <= '1'; EN <= '1'; data <= "00101010"; state <= s9;
+                when s9 =>
+                    EN <= '0'; state <= s10;
+                when s10 =>
+                    EN <= '1'; data <= "01010011"; state <= s11; -- S
+                when s11 =>
+                    EN <= '0'; state <= s12;
+                when s12 =>
+                    EN <= '1'; data <= "01001011"; state <= s13; -- K
+                when s13 =>
+                    EN <= '0'; state <= s14;
+                when s14 =>
+                    EN <= '1'; data <= "01001110"; state <= s15; -- N
+                when s15 =>
+                    EN <= '0'; state <= s16;
+                when s16 =>
+                    EN <= '1'; data <= "01000011"; state <= s17; -- C
+                when s17 =>
+                    EN <= '0'; state <= s18;
+                when s18 =>
+                    EN <= '1'; data <= "01001111"; state <= s19; -- O
+                when s19 =>
+                    EN <= '0'; state <= s20;
+                when s20 =>
+                    EN <= '1'; data <= "01000101"; state <= s21; -- E
+                when s21 =>
+                    EN <= '0'; state <= s22;
+                when s22 =>
+                    EN <= '1'; data <= "00101010"; state <= s23; -- (*)
+                when s23 =>
+                    EN <= '0';
+                when others =>
+                    state <= s0;
+            end case;
+        end if;
+    end process;
+end Behavioral;
+
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity lcdtest is
+end lcdtest;
+
+architecture behavior of lcdtest is
+    -- Component Declaration for the Unit Under Test (UUT)
+    component lcd
+        port(
+            clk  : in  std_logic;
+            reset : in  std_logic;
+            RS : out std_logic;
+            EN : out std_logic;
+            RW : out std_logic;
+            data : out std_logic_vector(7 downto 0)
+        );
+    end component;
+
+    -- Inputs
+    signal clk : std_logic := '0';
+    signal reset : std_logic := '0';
+
+    -- Outputs
+    signal RS : std_logic;
+    signal EN : std_logic;
+    signal RW : std_logic;
+    signal data : std_logic_vector(7 downto 0);
+
+    -- Clock period definitions
+    constant clk_period : time := 10 ns;
+begin
+    -- Instantiate the Unit Under Test (UUT)
+    uut: lcd port map (
+        clk  => clk,
+        reset => reset,
+        RS => RS,
+        EN => EN,
+        RW => RW,
+        data => data
+    );
+
+    -- Clock process definitions
+    clk_process : process
+    begin
+        clk <= '0';
+        wait for clk_period / 2;
+        clk <= '1';
+        wait for clk_period / 2;
+    end process;
+
+    -- Stimulus process
+    stim_proc: process
+    begin
+        -- Initial reset
+        reset <= '1';
+        wait for clk_period * 2;
+        reset <= '0';
+
+        -- Hold testbench open
+        wait;
+    end process;
+end behavior;
+
+-------------------------------------------------------------------------------------------------
+
+NET data(0) LOC =P62;
+NET data(1) LOC =P63;
+NET data(2) LOC =P64;
+NET data(3) LOC =P65;
+NET data(4) LOC =P67;
+NET data(5) LOC =P68;
+NET data(6) LOC =P71;
+NET data(7) LOC =P72;
+NET Clk LOC =P183;
+NET reset LOC =P102;
+NET RS LOC =P57;
+NET EN LOC =P61;
+NET RW LOC =P58;
+
+-------------------------------------------------------------------------------------------------
+
+

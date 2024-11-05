@@ -1,0 +1,78 @@
+----------------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <label id="array_data"></label>
+    <br><br>
+    <button onclick="remove_element()">Remove Element</button>
+    <br><br>
+    <button onclick="check_value()">Check Value</button>
+    <br><br>
+    <button onclick="empty_array()">Empty Array</button>
+    <br><br>
+    <button onclick="append_object()">Append object</button>
+
+    <script>
+
+        let array = [1, 2, 3, 4, 5];
+
+        const array_Str = String(array);
+
+        document.getElementById('array_data').innerHTML = `Original Array:- ${array_Str}`
+
+        function remove_element() {
+
+            const value = prompt("Enter elemet to remove!");
+            const index = array.indexOf(Number(value));
+            if (index !== -1) {
+                array.splice(index, 1);
+                document.getElementById('array_data').innerHTML = `New Updated Array:- ${array}`
+            }
+            else {
+                alert(`Cant find ${value} in array`)
+            }
+        }
+
+        function check_value() {
+
+            const value = prompt("Enter a number to find:- ");
+            const contains = array.includes(Number(value));
+            if (contains) {
+                alert(`Array contains ${value}`)
+            } else {
+                alert(`Array dont have ${value}`)
+            }
+        }
+
+        function empty_array() {
+            array = [];
+            document.getElementById('array_data').innerHTML = `New Updated Array:- ${array}`
+
+        }
+
+        function append_object() {
+            const value = prompt("Enter a number to append:- ");
+            array.push(value);
+            document.getElementById('array_data').innerHTML = `New Updated Array:- ${array}`
+
+
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>
+
+----------------------------------------------------------------------------------------------------------

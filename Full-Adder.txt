@@ -1,0 +1,119 @@
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity HalfAdder is
+    Port ( A : in STD_LOGIC;
+           B : in STD_LOGIC;
+           Sum : out STD_LOGIC;
+           Cout : out STD_LOGIC);
+end HalfAdder;
+
+architecture Behavioral of HalfAdder is
+begin
+    Sum <= A XOR B;
+    Cout <= A AND B;
+end Behavioral;
+
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity FullAdder is
+    Port ( A : in STD_LOGIC;
+           B : in STD_LOGIC;
+           Cin : in STD_LOGIC;
+           Sum : out STD_LOGIC;
+           Cout : out STD_LOGIC);
+end FullAdder;
+
+architecture Structural of FullAdder is
+    signal Sum1, Cout1, Cout2 : STD_LOGIC;
+    component HalfAdder is
+        Port ( A : in STD_LOGIC;
+               B : in STD_LOGIC;
+               Sum : out STD_LOGIC;
+               Cout : out STD_LOGIC);
+    end component;
+
+begin
+    HA1: HalfAdder port map (A, B, Sum1, Cout1);
+    HA2: HalfAdder port map (Sum1, Cin, Sum, Cout2);
+    
+    Cout <= Cout1 OR Cout2;  -- Final carry out
+end Structural;
+   
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity FullAdder_tb is
+end FullAdder_tb;
+
+architecture Behavioral of FullAdder_tb is
+    signal A, B, Cin : STD_LOGIC;
+    signal Sum, Cout : STD_LOGIC;
+    
+    component FullAdder is
+        Port ( A : in STD_LOGIC;
+               B : in STD_LOGIC;
+               Cin : in STD_LOGIC;
+               Sum : out STD_LOGIC;
+               Cout : out STD_LOGIC);
+    end component;
+    
+begin
+    -- Instantiate the Full Adder
+    UUT: FullAdder port map (A, B, Cin, Sum, Cout);
+
+    -- Stimulus process
+    process
+    begin
+        -- Test Case 1
+        A <= '0'; B <= '0'; Cin <= '0';
+        wait for 10 ns;
+
+        -- Test Case 2
+        A <= '0'; B <= '0'; Cin <= '1';
+        wait for 10 ns;
+
+        -- Test Case 3
+        A <= '0'; B <= '1'; Cin <= '0';
+        wait for 10 ns;
+
+        -- Test Case 4
+        A <= '0'; B <= '1'; Cin <= '1';
+        wait for 10 ns;
+
+        -- Test Case 5
+        A <= '1'; B <= '0'; Cin <= '0';
+        wait for 10 ns;
+
+        -- Test Case 6
+        A <= '1'; B <= '0'; Cin <= '1';
+        wait for 10 ns;
+
+        -- Test Case 7
+        A <= '1'; B <= '1'; Cin <= '0';
+        wait for 10 ns;
+
+        -- Test Case 8
+        A <= '1'; B <= '1'; Cin <= '1';
+        wait for 10 ns;
+
+        wait; -- Wait indefinitely
+    end process;
+end Behavioral;
+
+-------------------------------------------------------------------------------------------------
+
+net a loc = p87;
+net b loc= p86;
+net cin loc= p85;
+net s loc = p162;
+net cot loc = p165; 
+
+-------------------------------------------------------------------------------------------------

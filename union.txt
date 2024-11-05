@@ -1,0 +1,102 @@
+---------------------------------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Operations</title>
+</head>
+<body>
+    <h1>Set Operations</h1>
+
+    <!-- Section for Union -->
+    <h3>Union of two sets</h3>
+    <p id="unionResult"></p>
+
+    <!-- Section for Intersection -->
+    <h3>Intersection of two sets</h3>
+    <p id="intersectionResult"></p>
+
+    <!-- Section for Difference -->
+    <h3>Difference of set A - B</h3>
+    <p id="differenceResultAB"></p>
+
+    <h3>Difference of set B - A</h3>
+    <p id="differenceResultBA"></p>
+
+    <!-- Section for Symmetric Difference -->
+    <h3>Symmetric Difference of two sets</h3>
+    <p id="symmetricDifferenceResult"></p>
+
+    <script>
+        // Union operation
+        function union(a, b) {
+            let unionSet = new Set(a);
+            for (let i of b) {
+                unionSet.add(i);
+            }
+            return unionSet;
+        }
+
+        // Intersection operation
+        function intersection(a, b) {
+            let intersectionSet = new Set();
+            for (let i of b) {
+                if (a.has(i)) {
+                    intersectionSet.add(i);
+                }
+            }
+            return intersectionSet;
+        }
+
+        // Difference operation
+        function difference(a, b) {
+            let differenceSet = new Set(a);
+            for (let i of b) {
+                differenceSet.delete(i);
+            }
+            return differenceSet;
+        }
+
+        // Symmetric difference operation
+        function symmetricDifference(a, b) {
+            let diffSet = new Set(a);
+            for (let i of b) {
+                if (diffSet.has(i)) {
+                    diffSet.delete(i);
+                } else {
+                    diffSet.add(i);
+                }
+            }
+            return diffSet;
+        }
+
+        // Sets of fruits
+        const setA = new Set(['apple', 'mango', 'orange']);
+        const setB = new Set(['grapes', 'apple', 'banana']);
+
+        // Display union result
+        const unionResult = union(setA, setB);
+        document.getElementById('unionResult').innerText = `Union: ${Array.from(unionResult).join(', ')}`;
+
+        // Display intersection result
+        const intersectionResult = intersection(setA, setB);
+        document.getElementById('intersectionResult').innerText = `Intersection: ${Array.from(intersectionResult).join(', ')}`;
+
+        // Display difference result A - B
+        const differenceResultAB = difference(setA, setB);
+        document.getElementById('differenceResultAB').innerText = `A - B: ${Array.from(differenceResultAB).join(', ')}`;
+
+        // Display difference result B - A
+        const differenceResultBA = difference(setB, setA);
+        document.getElementById('differenceResultBA').innerText = `B - A: ${Array.from(differenceResultBA).join(', ')}`;
+
+        // Display symmetric difference result
+        const symmetricDifferenceResult = symmetricDifference(setA, setB);
+        document.getElementById('symmetricDifferenceResult').innerText = `Symmetric Difference: ${Array.from(symmetricDifferenceResult).join(', ')}`;
+    </script>
+</body>
+</html>
+
+---------------------------------------------------------------------------------------------------------------------------

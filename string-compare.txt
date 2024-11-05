@@ -1,0 +1,61 @@
+-----------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Compare</title>
+</head>
+
+<body>
+
+    <h3>Two String Comparison</h3>
+    <input id="str1" type="text">
+    <input id="str2" type="text">
+    <button onclick="compare_strings()">Compare Two Strings</button>
+    <div id="result"></div>
+
+
+    <script>
+
+        function getData(id_name) {
+            return document.getElementById(id_name).value;
+        }
+
+
+        function compare_strings() {
+
+            const result = document.getElementById('result');
+            result.innerHTML = "";
+
+            const str1 = getData('str1');
+            const str2 = getData('str2');
+
+            if (str1 === str2) {
+                result.innerHTML += `<br> Normal Compare :- Both Strings are Equal!<br>`;
+            } else {
+                result.innerHTML += `<br> Normal Compare :- Both Strings are not Equal<br> `
+            }
+
+
+            if (str1.toUpperCase() === str2.toUpperCase()) {
+                result.innerHTML += `<br> Upper Case Compare :- Both Strings are Equal!<br>`;
+            } else {
+                result.innerHTML += `<br> Upper Case Compare :- Both Strings are not Equal<br> `
+            }
+
+            if (str1.toLowerCase() === str2.toLowerCase()) {
+                result.innerHTML += `<br> Lower Case Compare :- Both Strings are Equal!<br>`;
+            } else {
+                result.innerHTML += `<br> Lower Case Compare :- Both Strings are not Equal<br> `
+            }
+        }
+    </script>
+
+</body>
+
+</html>
+
+-----------------------------------------------------------------------------------------------------

@@ -1,0 +1,40 @@
+-----------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Multiplication_table</title>
+</head>
+
+<body>
+
+
+    <h3>Multiplication Table</h3>
+    <input id="input_num" type="numer" placeholder="Enter a number">
+    <button onclick="calculate_table()">Calculate</button>
+    <div id="table"></div>
+
+
+
+    <script>
+
+        function calculate_table() {
+            const number = parseFloat(document.getElementById('input_num').value);
+            const output = document.getElementById('table');
+            output.innerHTML = ""
+
+            for (let i = 1; i <= 10; i++) {
+                const res = number * i;
+                output.innerHTML += `${res}<br>`
+            }
+
+        }
+    </script>
+</body>
+
+</html>
+
+-----------------------------------------------------------------------------------------------------

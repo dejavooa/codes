@@ -1,0 +1,63 @@
+-----------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Append and Check</title>
+</head>
+
+<body>
+    <h2>Array Append and Array Check Program</h2>
+
+    <label for="inputObject">Enter an object to append to the array:</label>
+    <input type="text" id="inputObject" placeholder='e.g. {"name": "Alice"}'>
+    <button onclick="appendObject()">Append to Array</button>
+    <button onclick="checkIfArray()">Check if Array</button>
+
+    <h3>Output:</h3>
+    <div id="output"></div>
+
+    <script>
+        // Initialize an empty array
+        let myArray = [];
+
+        // Function to append an object to the array
+        function appendObject() {
+            const input = document.getElementById("inputObject").value;
+            try {
+                // Parse the input string as an object
+                const obj = JSON.parse(input);
+                if (typeof obj === 'object' && !Array.isArray(obj)) {
+                    myArray.push(obj);
+                    document.getElementById("output").innerText = "Object appended to array: " + JSON.stringify(myArray);
+                } else {
+                    document.getElementById("output").innerText = "Please enter a valid object (not an array).";
+                }
+            } catch (error) {
+                document.getElementById("output").innerText = "Invalid input. Enter a valid JSON object.";
+            }
+        }
+
+        // Function to check if the input is an array
+        function checkIfArray() {
+            const input = document.getElementById("inputObject").value;
+            try {
+                const parsedInput = JSON.parse(input);
+                if (Array.isArray(parsedInput)) {
+                    document.getElementById("output").innerText = "The input is an array.";
+                } else {
+                    document.getElementById("output").innerText = "The input is not an array.";
+                }
+            } catch (error) {
+                document.getElementById("output").innerText = "Invalid input. Enter a valid JSON array or object.";
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+-----------------------------------------------------------------------------------------------

@@ -1,0 +1,46 @@
+------------------------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+
+    <h3>Countdown Timer</h3>
+    <label id="timer"></label>
+
+    <script>
+        const countdown = setInterval(() => {
+            const now = new Date();
+            const hour = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const sec = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('timer').innerHTML = `${hour}:${min}:${sec}`
+            const h = '15';
+            const m = '18';
+            const s = '00';
+
+            if (parseInt(hour) >= parseInt(h) && parseInt(min) >= parseInt(m) && parseInt(sec) >= parseInt(s)) {
+                document.getElementById('timer').innerHTML = `Desired Time Achieved!`
+                clearInterval(countdown);
+
+            }
+            if (hour === h && min === m && sec === s) {
+                document.getElementById('timer').innerHTML = `Desired Time Achieved!`
+                clearInterval(countdown);
+            }
+
+        }, 1000);
+
+    </script>
+</body>
+
+</html>
+
+------------------------------------------------------------------------------------------------------------------

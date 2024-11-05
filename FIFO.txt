@@ -1,0 +1,149 @@
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity FIFO is
+    Port (
+        DI : in std_logic_vector(3 downto 0);
+        DO : out std_logic_vector(3 downto 0);
+        RW : in std_logic;
+        FULL : out std_logic;
+        RS : in std_logic;
+        CLK : in std_logic
+    );
+end FIFO;
+
+architecture Behavioral of FIFO is
+    type memory is array (0 to 3) of std_logic_vector(3 downto 0);
+    variable mem : memory;
+    variable r_p : integer range 0 to 3 := 0;
+    variable w_p : integer range 0 to 3 := 0;
+    variable overwrite : boolean := false;
+begin
+    process(RS, CLK)
+    begin
+        if RS = '1' then
+            DO <= "0000";
+            r_p := 0;
+            w_p := 0;
+            overwrite := false;
+            FULL <= '0';
+            
+        elsif rising_edge(CLK) then
+            if RW = '1' then
+                if (not overwrite or w_p /= r_p) then
+                    mem(w_p) := DI;
+                    if w_p = 3 then
+                        w_p := 0;
+                    else
+                        w_p := w_p + 1;
+                    end if;
+                    overwrite := false;
+                end if;
+                
+            elsif RW = '0' then
+                if (not overwrite or w_p /= r_p) then
+                    DO <= mem(r_p);
+                    if r_p = 3 then
+                        r_p := 0;
+                        overwrite := true;
+                    else
+                        r_p := r_p + 1;
+                    end if;
+                end if;
+            end if;
+
+            FULL <= '1' when (w_p = r_p and overwrite) else '0';
+        end if;
+    end process;
+end Behavioral;
+
+-------------------------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity FIFO_tb is
+end FIFO_tb;
+
+architecture behavior of FIFO_tb is
+    -- Component Declaration for the Unit Under Test (UUT)
+    component FIFO
+        port (
+            DI : in std_logic_vector(3 downto 0);
+            RW : in std_logic;
+            RS : in std_logic;
+            CLK : in std_logic;
+            DO : out std_logic_vector(3 downto 0);
+            FULL : out std_logic
+        );
+    end component;
+
+    -- Testbench Signals
+    signal RW : std_logic := '0';
+    signal RS : std_logic := '0';
+    signal CLK : std_logic := '0';
+    signal DI : std_logic_vector(3 downto 0) := (others => '0');
+    signal DO : std_logic_vector(3 downto 0);
+    signal FULL : std_logic;
+    constant CLK_period : time := 10 ns;
+
+begin
+    -- Instantiate the Unit Under Test (UUT)
+    uut: FIFO port map (
+        DI => DI,
+        DO => DO,
+        RW => RW,
+        FULL => FULL,
+        RS => RS,
+        CLK => CLK
+    );
+
+    -- Clock generation process
+    process
+    begin
+        CLK <= '0';
+        wait for CLK_period / 2;
+        CLK <= '1';
+        wait for CLK_period / 2;
+    end process;
+
+    -- Testbench process to apply stimulus
+    tb : process
+    begin
+        RS <= '1';
+        wait for 100 ns;
+        RS <= '0';
+
+        -- Write operations
+        RW <= '1';
+        DI <= "0011";
+        wait for 10 ns;
+
+        DI <= "0110";
+        wait for 10 ns;
+
+        DI <= "1100";
+        wait for 10 ns;
+
+        DI <= "1001";
+        wait for 10 ns;
+
+        -- Read operations
+        RW <= '0';
+        wait for 10 ns;
+        RW <= '0';
+        wait for 10 ns;
+        RW <= '0';
+        wait for 10 ns;
+
+        -- Wait to observe the final state
+        wait for CLK_period * 10;
+        wait; -- wait forever
+    end process;
+end behavior;
+
+-------------------------------------------------------------------------------------------------

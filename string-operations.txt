@@ -1,0 +1,59 @@
+-----------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <h3>String Manipulation</h3>
+    <input id="input_1" type="text" placeholder="Enter the string...">
+    <button onclick="reverse_palindrome()">Reverse and Palindrome Check</button>
+    <button onclick="replace()">Replace Character</button>
+    <br><br>
+    <div id="result"></div>
+
+
+    <script>
+
+        function reverse_palindrome() {
+
+            const res = document.getElementById('result');
+            res.innerHTML = "";
+
+            const input = document.getElementById('input_1').value;
+            const result = input.split('').reverse().join('');
+            res.innerHTML += `Reverse String:- ${result}`;
+            const palindrome = input === result;
+            if (palindrome) {
+                res.innerHTML += `<br>Given String is Palindrome!`;
+            } else {
+                res.innerHTML += `<br>Given String is not a Palindrome!`;
+            }
+        }
+
+        function replace() {
+
+
+            const res = document.getElementById('result');
+            res.innerHTML = "";
+            const input = document.getElementById('input_1').value;
+            const a = prompt("Enter Character to replace");
+            const b = prompt("Enter Replacement Character");
+            const result = input.split(a).join(b);
+            res.innerHTML += `<br> Replaced ${a} with ${b} and the output is '${result}'<br>`
+
+
+        }
+    </script>
+
+</body>
+
+</html>
+
+-----------------------------------------------------------------------------------------------------
